@@ -8,6 +8,8 @@ import org.bukkit.World;
 public class Chunk 
 {
 	public byte[] blocks;
+	// keeps the same stair type throughout a building
+	private byte buildingStairID;
 		
 	Chunk () 
 	{
@@ -128,7 +130,7 @@ public class Chunk
 		}
 	}
 	
-	private void setFloor(Random random, int blocky, Material material, Material layer, Material glass, int windowsize)
+	private void setFloor(Random random, int blocky, Material material, Material layer, Material glass, int windowsize, byte stairId)
 	{
 
 		// the big bits
@@ -138,7 +140,6 @@ public class Chunk
 		// the stairs
 		byte airId = (byte) Material.AIR.getId();
 		// Material.SMOOTH_STAIRS.getId();
-		 byte stairId = (byte)getRandomStairType(random).getId();
 		
 		int x;
 		for (x = 0; x < wallheight; x++) 
@@ -231,6 +232,7 @@ public class Chunk
 		Material foundation = Material.STONE;
 		Material material = getRandomWallMaterial(random);
 		Material layer = getRandomLayerMaterial(random);
+		buildingStairID = (byte)getRandomStairType(random).getId();
 		
 		// Always use 2 separate materials for buildings to keep things looking nice
 		while (layer == material)
@@ -249,7 +251,7 @@ public class Chunk
 			// the rooms them
 			for (floor = -basementfloors; floor < 0; floor++) 
 			{
-				setFloor(random, blocky - Math.abs(floor) * wallheight + foundationheight, material, layer, Material.GLASS, windowsnone);
+				setFloor(random, blocky - Math.abs(floor) * wallheight + foundationheight, material, layer, Material.GLASS, windowsnone, buildingStairID);
 			}
 			
 			// bottom most bit
@@ -265,7 +267,7 @@ public class Chunk
 		// now the floor itself
 		for (floor = 0; floor < floors; floor++) 
 		{
-			setFloor(random, blocky + floor * 4 + foundationheight, material, layer, Material.GLASS, windowsize);
+			setFloor(random, blocky + floor * 4 + foundationheight, material, layer, Material.GLASS, windowsize, buildingStairID);
 		}
 	}
 	
