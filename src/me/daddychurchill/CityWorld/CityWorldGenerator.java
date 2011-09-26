@@ -7,13 +7,15 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.generator.ChunkGenerator;
 
-public class CityWorldGenerator extends ChunkGenerator {
+public class CityWorldGenerator extends ChunkGenerator 
+{
 
 	@SuppressWarnings("unused")
 	private CityWorld plugin;
 	public String citystyle;
 	
-	public CityWorldGenerator(CityWorld instance, String id){
+	public CityWorldGenerator(CityWorld instance, String id)
+	{
 		this.plugin = instance;
 		this.citystyle = id;
 	}
@@ -22,13 +24,15 @@ public class CityWorldGenerator extends ChunkGenerator {
 	static final int citystreetat = 15;
 	
 	@Override
-	public Location getFixedSpawnLocation(World world, Random random) {
+	public Location getFixedSpawnLocation(World world, Random random) 
+	{
 		// TODO do something smarter!
 		return new Location(world, 8, citystreetat + Chunk.foundationheight + 1, 8);
 	}
 
 	@Override
-	public byte[] generate(World world, Random random, int chunkX, int chunkZ) {
+	public byte[] generate(World world, Random random, int chunkX, int chunkZ)
+	{
 		Chunk chunk = new Chunk();
 		
 		// what type of road?
@@ -42,15 +46,20 @@ public class CityWorldGenerator extends ChunkGenerator {
 		// TODO Multiple width buildings
 		
 		// roads?
-		if (northsouth || eastwest) {
+		if (northsouth || eastwest) 
+		{
 			chunk.setStreet(world, random, citystreetat, northsouth, eastwest);
 		
 		// park? (about one per city block, on average)
-		} else if (random.nextInt((cityblocksize - 1) * (cityblocksize - 1)) == 0) {
+		} 
+		else if (random.nextInt((cityblocksize - 1) * (cityblocksize - 1)) == 0) 
+		{
 			chunk.setPark(world, random, citystreetat);
 		
 		// building...
-		} else {
+		}
+		else 
+		{
 			chunk.setBuilding(world, random, citystreetat);
 		}
 		

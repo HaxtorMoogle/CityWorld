@@ -2,4 +2,8 @@ name: CityWorld
 main: me.daddychurchill.CityWorld.CityWorld
 version: 0.1
 load: startup
-author: DaddyChurchill
+author: DaddyChurchill, HaxtorMoogle
+commands:
+  debug:
+    description: Toggles your debugging status for this plugin.
+    usage: /debug
