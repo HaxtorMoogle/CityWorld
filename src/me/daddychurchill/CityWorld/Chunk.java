@@ -8,8 +8,13 @@ import org.bukkit.World;
 public class Chunk 
 {
 	public byte[] blocks;
+	
 	// keeps the same stair type throughout a building
 	private byte buildingStairID;
+	
+	// Glass type for a building
+	private byte buildingGlassID;
+	
 		
 	Chunk () 
 	{
@@ -63,7 +68,8 @@ public class Chunk
 	final static int stairinsetz = 6;
 	final static int sidewalkwidth = 3;
 	
-	private byte getWallMaterial(Random random, int i, byte materialId, byte windowId, int windowsize) {
+	private byte getWallMaterial(Random random, int i, byte materialId, byte windowId, int windowsize) 
+	{
 		
 		// assume the wall is the winner
 		byte blockId = materialId;
@@ -73,9 +79,7 @@ public class Chunk
 		{
 			
 			// windows win if it all windows or...
-			if (windowsize == windowsall ||
-				(windowsize != windowsrandom && i % windowsize != 0) ||
-				(windowsize == windowsrandom && random.nextInt(3) == 0))
+			if (windowsize == windowsall || (windowsize != windowsrandom && i % windowsize != 0) ||	(windowsize == windowsrandom && random.nextInt(3) == 0))
 			{
 				blockId = windowId;
 			} 	
@@ -84,11 +88,11 @@ public class Chunk
 		return blockId;
 	}
 	
-	private void setFloorWall(Random random, int blocky, Material material, Material glass, int windowsize) 
+	private void setFloorWall(Random random, int blocky, Material material, byte glass, int windowsize) 
 	{
 		int x, y, z;
 		byte materialId = (byte) material.getId();
-		byte windowId = (byte) glass.getId();
+		byte windowId = glass;
 		byte blockId;
 		
 		for (x = wallinset; x < chunkwidth - wallinset; x++) 
@@ -130,7 +134,7 @@ public class Chunk
 		}
 	}
 	
-	private void setFloor(Random random, int blocky, Material material, Material layer, Material glass, int windowsize, byte stairId)
+	private void setFloor(Random random, int blocky, Material material, Material layer, byte glass, int windowsize, byte stairId)
 	{
 
 		// the big bits
@@ -201,6 +205,18 @@ public class Chunk
 		}
 	}
 	
+	//randomly pick between glass blocks and glass panes
+	protected Material getRandomGlassType(Random rand)
+	{
+		switch(rand.nextInt(4))
+		{
+		case 1: return Material.THIN_GLASS;
+		case 2: return Material.GLASS;
+		case 3: return Material.THIN_GLASS;
+		default: return Material.GLASS; 
+		}
+	}
+	
 	protected Material getRandomLayerMaterial(Random random) 
 	{
 		switch (random.nextInt(14)) 
@@ -233,6 +249,8 @@ public class Chunk
 		Material material = getRandomWallMaterial(random);
 		Material layer = getRandomLayerMaterial(random);
 		buildingStairID = (byte)getRandomStairType(random).getId();
+		buildingGlassID = (byte)getRandomGlassType(random).getId();
+		
 		
 		// Always use 2 separate materials for buildings to keep things looking nice
 		while (layer == material)
@@ -251,7 +269,7 @@ public class Chunk
 			// the rooms them
 			for (floor = -basementfloors; floor < 0; floor++) 
 			{
-				setFloor(random, blocky - Math.abs(floor) * wallheight + foundationheight, material, layer, Material.GLASS, windowsnone, buildingStairID);
+				setFloor(random, blocky - Math.abs(floor) * wallheight + foundationheight, material, layer, buildingGlassID, windowsnone, buildingStairID);
 			}
 			
 			// bottom most bit
@@ -267,7 +285,7 @@ public class Chunk
 		// now the floor itself
 		for (floor = 0; floor < floors; floor++) 
 		{
-			setFloor(random, blocky + floor * 4 + foundationheight, material, layer, Material.GLASS, windowsize, buildingStairID);
+			setFloor(random, blocky + floor * 4 + foundationheight, material, layer, buildingGlassID, windowsize, buildingStairID);
 		}
 	}
 	
